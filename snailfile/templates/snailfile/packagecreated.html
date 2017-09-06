@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% csrf_token %}
+    <p>The following package has been created!</p>
+    <p>Provider Number: {{ newpack.pprovnum }}</p>
+    <p>FYE: {{ newpack.pfye }}</p>
+    <p>Title: {{ newpack.ptitle }}</p>
+    <p>Detail: {{ newpack.pdescription }}</p>
+    <br>
+    <a href="{% url 'vocredentialpage' %}">Click here to view and print the provider credential page</a>
+    <br><br>
+{% endblock %}

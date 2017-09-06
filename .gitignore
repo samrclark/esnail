@@ -1,0 +1,12 @@
+*.pyc
+*~
+__pycache__
+esenv
+db.sqlite3
+/static
+/media
+.DS_store
+secret_settings.py
+RequiredInstalls.txt
+todo.txt
+

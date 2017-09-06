@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% csrf_token %}
+
+             <!-- Example Tables Card -->
+        <div class="card mb-3">
+
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered" width="100%" id="dataTable" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th align="left">Provider #</th>
+                        <th align="left">FYE</th>
+                        <th align="left">Package Title</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for fpack in filepacks %}
+                    <tr>
+                        <td>{{fpack.pprovnum}}</td>
+                        <td>{{fpack.pfye|date:"m/d/Y"}}</td>
+                        <td><a href="{% url 'packagedetail' fpack.id %}">{{ fpack.ptitle }}</a></td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer small text-muted">
+            
+          </div>
+        </div>
+
+{% endblock %}

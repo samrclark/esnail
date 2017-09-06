@@ -1,0 +1,20 @@
+BEFORE WEDNESDAY
+
+DONE - Clear sidebar of unused items
+DONE - add to Package model - Uploaded by and uploaded date
+Partial DONE - Buttons exist need edit/delete url/view/page - add Edit button to package view and create edit page for packages
+DONE - Button exist need page - Have button on package view to regen a VOC
+
+Sorta done - Make VOC presentable
+
+Transfer static and media to AWS S3
+Transfer DB to AWS RDB
+Transfer project to AWS lambda or EC2
+
+
+LONGER TERM
+Need programatic management of user ids.
+    Site registration for org users
+    Password management for org users
+
+
