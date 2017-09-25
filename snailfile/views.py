@@ -24,6 +24,14 @@ from django.contrib.auth.decorators import user_passes_test
 def is_org(user):
         return user.groups.filter(name__startswith='org_').exists()
 
+def getpackageforuser(pid, user):
+    ugroups = user.groups.all()
+    fpacks=FilePackage.objects.filter(
+    Q(id=pid) & (
+    Q(accessiblebyusers = user) |
+    Q(accessiblebygroups__in = ugroups))).distinct()
+    return fpacks
+
 # Create your views here.
 
 @login_required
@@ -76,18 +84,18 @@ def PackageCreation(request):
                     afile = f,
                 )
                 newattach.save()
-                #newpack.fileattachment_set.add(newattach)
 
             request.session['foo'] = "wew lad"
             request.session['last_pid'] = newpack.id
             request.session['last_uid'] = rousername
             request.session['last_upw'] = randpw
-            #return redirect('home')
+
             return redirect('packagecreated')
 
     else:
-        packageform = FilePackageForm()
-        attachform = FileAttachmentForm()
+
+            packageform = FilePackageForm()
+            attachform = FileAttachmentForm()
 
     return render(request, 'snailfile/packagecreation.html', {
         'attachform': attachform, 'packageform': packageform})
@@ -178,7 +186,7 @@ def VOCredentialPage(request):
 @login_required
 @user_passes_test(is_org, login_url='home')
 def VOCRegen(request, pid=0):
-    #check that this is accessible by users org
+    #need to check that this is accessible by users org
     if pid == 0:
         return redirect('home')
 
@@ -210,3 +218,70 @@ def VOCRegen(request, pid=0):
     request.session['last_upw'] = randpw
     request.session['foo'] = "wew lad"
     return redirect('vocredentialpage')
+
+@login_required
+@user_passes_test(is_org, login_url='home')
+def PackageDelete(request, pid=0):
+    if pid == 0:
+        return redirect('home')
+
+    try:
+        cpack = FilePackage.objects.get(id = pid)
+    except ObjectDoesNotExist:
+        return redirect('home')
+
+    cpack.delete()
+    return redirect('home')
+
+@login_required
+@user_passes_test(is_org, login_url='home')
+def PackageEdit(request, pid=0):
+    if pid==0:
+            return redirect('home')
+    fpacks=getpackageforuser(pid, request.user)
+    if not fpacks:
+            return redirect('home')
+    fpack = fpacks[0]
+    fattachs = FileAttachment.objects.filter(filepackage=fpack)
+
+    if request.method == 'POST':
+        packageform = FilePackageForm(request.POST, instance=fpack)
+        if not fattachs:
+            attachform = FileAttachmentForm(request.POST, request.FILES)
+        else:
+            fattach = fattachs[0]
+            attachform = FileAttachmentForm(request.POST, request.FILES, instance=fattach)
+        
+        files = request.FILES.getlist('afile')
+        if attachform.is_valid() and packageform.is_valid():
+            
+            for fa in fattachs:
+                print(fa.afile.path)
+            fpack = packageform.save()
+
+            if 'afile' in request.FILES:
+                for oldattach in fattachs:
+                    delatt = FileAttachment.objects.get(id=oldattach.id)
+                    delid = oldattach.id
+                    delatt.delete()
+            
+            for f in files:
+                newattach =FileAttachment(
+                    filepackage = fpack,
+                    originalfilename = f.name,
+                    afile = f,
+                )
+                newattach.save()
+                
+            return redirect('home')
+    else:
+        packageform = FilePackageForm(instance=fpack)
+
+        if not fattachs:
+            attachform = FileAttachmentForm()
+        else:
+            fattach = fattachs[0]
+            attachform = FileAttachmentForm(instance=fattach)
+
+    return render(request, 'snailfile/packageedit.html', {
+        'attachform': attachform, 'packageform': packageform})

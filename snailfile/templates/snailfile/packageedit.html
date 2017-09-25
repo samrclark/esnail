@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+<div class="form-group">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table>
+        {{ packageform.as_table}}</table>
+        {{ attachform.as_p }}
+        <button type="submit">Update</button>
+    </form>
+</div>
+{% endblock %}

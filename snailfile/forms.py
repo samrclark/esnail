@@ -21,6 +21,6 @@ class FileAttachmentForm(forms.ModelForm):
         model = FileAttachment
 #        fields = ('filepackage', 'originalfilename', 'adescription', 'afile',)
         fields = ('afile',)
-        file_field = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+        #file_field = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
 
         

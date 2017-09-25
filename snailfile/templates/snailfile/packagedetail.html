@@ -39,10 +39,10 @@
                 {% if isorg %}
                  <div class="panel-footer">
                         <a href="{% url 'vocregen' fpack.id %}" data-original-title="Generate VOC" data-toggle="tooltip" type="button" class="btn btn-sm btn-primary"><i class="fa fa-fw fa-envelope-o"></i></a>
-                        <a href="#" data-original-title="Edit this package" data-toggle="tooltip" type="button" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-edit"></i></a>
+                        <a href="{% url 'edit' fpack.id %}" data-original-title="Edit this package" data-toggle="tooltip" type="button" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-edit"></i></a>
                         <span class="pull-right">
                             
-                            <a data-original-title="Remove this package" data-toggle="tooltip" type="button" class="btn btn-sm btn-danger"><i class="fa fa-fw fa-trash"></i></a>
+                            <a href="{% url 'packagedelete' fpack.id %}" data-original-title="Remove this package" data-toggle="tooltip" type="button" class="btn btn-sm btn-danger"><i class="fa fa-fw fa-trash"></i></a>
                         </span>
                 </div>
                 {% endif %}
