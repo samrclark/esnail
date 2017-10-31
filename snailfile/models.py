@@ -2,6 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth.models import Group
+from custom_storages import PrivateMediaStorage
+from django.core.files.storage import default_storage
 import os
 
 
@@ -13,15 +15,12 @@ class Tag(models.Model):
 class FileAttachment(models.Model):
     filepackage = models.ForeignKey('FilePackage', on_delete=models.CASCADE)
     originalfilename = models.CharField(verbose_name='Original Filename', max_length=256)
-#    #django storages ID thing here instead of base file class
-    afile = models.FileField(verbose_name='File', upload_to='attachments/')
+    afile = models.FileField(storage=PrivateMediaStorage(), verbose_name='File', upload_to='attachments/')
     def __str__(self):
         return self.originalfilename
 
     def delete(self,*args,**kwargs):
-        if os.path.isfile(self.afile.path):
-            os.remove(self.afile.path)
-
+        self.afile.delete()
         super(FileAttachment, self).delete(*args,**kwargs)
 
 class FilePackage(models.Model):

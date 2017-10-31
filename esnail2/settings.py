@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cauth',
     'snailfile',
-    'bootstrap3',
+    'storages',
+
 ]
 
 MIDDLEWARE = [
@@ -119,10 +120,28 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
+#os.environ['S3_USE_SIGV4'] = 'True'
+#3_USE_SIGV4 = True
+AWS_S3_SIGNATURE_VERSION='s3v4'
+AWS_S3_HOST = 's3.us-east-2.amazonaws.com'
+AWS_S3_REGION_NAME ='us-east-2'
+AWS_QUERYSTRING_EXPIRE = 20
 
 STATIC_ROOT = ''
-STATIC_URL = '/static/'
-STATICFILES_DIRS = ( os.path.join('static'), )
+AWS_STATIC_STORAGE_BUCKET_NAME = 'esnailstatic'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STATIC_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_STATIC_LOCATION = 'static'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
+#STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+AWS_PRIVATE_MEDIA_LOCATION='media'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
